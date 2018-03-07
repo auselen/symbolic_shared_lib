@@ -1,6 +1,30 @@
 # symbolic_shared_lib
 Demonstrate result of linking shared libraries with and without symbolic flag.
 ```
+$ cat foo.c
+int foo() {
+    return FOO;
+}
+
+int FNAME() {
+	return foo();
+}
+
+$ cat main.c
+#include <stdio.h>
+
+int bar();
+int baz();
+
+int foo() {
+    return FOO;
+}
+
+int main() {
+    printf("%d =? %d =? %d\n", foo(), bar(), baz());
+    return 0;
+}
+
 $ make
 gcc -Wall -fPIC -I. -shared -Wl,-Bsymbolic -DFNAME=bar -DFOO=1 foo.c -o bar_sym.so
 gcc -Wall -fPIC -I. -shared -Wl,-Bsymbolic -DFNAME=baz -DFOO=2 foo.c -o baz_sym.so
@@ -15,3 +39,4 @@ without symbolic linking
 LD_LIBRARY_PATH=. ./main
 0 =? 0 =? 0
 ```
+
